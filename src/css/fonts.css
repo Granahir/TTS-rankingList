@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:300,400,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+
+:root {
+    --TTS-font-family: 'Open Sans', sans-serif;
+    --TTS-font-family-header: 'Montserrat', sans-serif;
+    --TTS-font-size: 1rem;
+}
+

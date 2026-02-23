@@ -1,0 +1,14 @@
+:root {
+    --TTS-blue: #14387f;
+    --TTS-purple: #662483;
+    --TTS-purple-light: #dec0ed;
+    --TTS-header: #1f2123;
+    --TTS-text:#191919;
+
+    --TTS-accurate-rating: green;
+    --TTS-fairly-accurate-rating: yellow;
+    --TTS-medium-accuracy-rating: orange;
+    --TTS-low-accuracy-rating: red;
+    --TTS-no-accuracy-rating: grey;
+}
+
