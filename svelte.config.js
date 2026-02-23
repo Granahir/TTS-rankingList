@@ -3,9 +3,9 @@ import adapter from '@sveltejs/adapter-static'
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({pages: 'docs', assets: 'docs' ,fallback: '404.html'}),
 		embedded: true,
-		paths: { base: process.env.BASE_PATH || '' },
+		paths: { base: process.argv.includes('dev') ? '' : '/TTS-rankingList' },
 		alias: {
 		$css: 'src/css',
 		$components: 'src/components'
