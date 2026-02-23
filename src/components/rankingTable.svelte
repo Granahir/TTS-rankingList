@@ -1,6 +1,6 @@
 <script>
   const spreadsheetId = '1s-f2RdWFbBhl7T3Hrxpsc845gY6zTPVPb9kGDtvjdGc'
-  const sheetName = 'All events players have played in'
+  const sheetName = 'Rating List'
 
   let tableHeaders = ['Rank', 'Name', 'Rating', 'Age', 'Gender', 'Club']
 
@@ -45,9 +45,9 @@
         if (selectedGenderGroup === 'Mixed') {
           return true
         } else if (selectedGenderGroup === 'Female') {
-          return player['Sex'] === 'F'
+          return player['Gender'] === 'F'
         } else if (selectedGenderGroup === 'Male') {
-          return player['Sex'] === 'M'
+          return player['Gender'] === 'M'
         }
       })
       .filter(player => {
@@ -60,7 +60,7 @@
         Name: player['Name'],
         Rating: player['Rating'],
         Age: undefined,
-        Gender: player['Sex'],
+        Gender: player['Gender'],
         Club: player['PrimaryClub'],
         stDev: +player['StDev'],
         playerID: player['ID']
