@@ -1,5 +1,9 @@
 <script>
-  import { SvelteMap } from 'svelte/reactivity'
+  import AccurateCircle from '$components/AccurateCircle.svelte'
+  import FairlyAccurateCircle from '$components/FairlyAccurateCircle.svelte'
+  import MediumAccuracyCircle from '$components/MediumAccuracyCircle.svelte'
+  import LowAccuracyCircle from '$components/LowAccuracyCircle.svelte'
+  import NoAccuracyCircle from '$components/NoAccuracyCircle.svelte'
 
   const spreadsheetId = '1s-f2RdWFbBhl7T3Hrxpsc845gY6zTPVPb9kGDtvjdGc'
   const sheetName = 'Full List'
@@ -132,31 +136,41 @@
       </select>
     </div>
   </div>
+</div>
 
-  <div class="nav-container">
-    <h3>Accuracy</h3>
-    <div class="colourKey">
+<div class="legend-container">
+  <h3 class="center">Rating accuracy</h3>
+  <!-- <div class="colourKey">
       <div class="colourKey-container">
-        <div class="colourRect accurateColour"></div>
+        <AccurateCircle />
         <span>Accurate</span>
       </div>
       <div class="colourKey-container">
-        <div class="colourRect fairlyAccurateColour"></div>
+        <FairlyAccurateCircle />
         <span>Fairly accurate</span>
       </div>
       <div class="colourKey-container">
-        <div class="colourRect mediumAccuracyColour"></div>
+        <MediumAccuracyCircle />
         <span>Medium accuracy</span>
       </div>
       <div class="colourKey-container">
-        <div class="colourRect lowAccuracyColour"></div>
+        <LowAccuracyCircle />
         <span>Low accuracy</span>
       </div>
       <div class="colourKey-container">
-        <div class="colourRect noAccuracyColour"></div>
+        <NoAccuracyCircle />
         <span> Not enough games played</span>
       </div>
-    </div>
+    </div> -->
+
+  <div class="pattern-container">
+    <span>Inaccurate ◀</span>
+    <NoAccuracyCircle />
+    <LowAccuracyCircle />
+    <MediumAccuracyCircle />
+    <FairlyAccurateCircle />
+    <AccurateCircle />
+    <span> ▶ Accurate </span>
   </div>
 </div>
 
@@ -166,18 +180,17 @@
     <table>
       <caption id="tableCaption_01">Player ranking of Table-Tennis Scotland</caption>
       <colgroup>
-        <col class="col-rank" />
-        <col class="col-name" />
-        <col class="col-rating" />
-        <!-- <col class="col-age" /> -->
-        <col class="col-gender" />
-        <col class="col-club" />
+        <col class="col-rank Rank-cell" />
+        <col class="col-name Name-cell" />
+        <col class="col-rating Rating-cell" />
+        <col class="col-gender Gender-cell" />
+        <col class="col-club Club-cell" />
       </colgroup>
 
       <thead>
         <tr>
           {#each tableHeaders as header}
-            <th scope="column">{header}</th>
+            <th scope="column" class="{header}-cell">{header}</th>
           {/each}
         </tr>
       </thead>
@@ -186,23 +199,30 @@
           <tr>
             {#each tableHeaders as header}
               {#if header === 'Name'}
-                <th scope="row">
+                <th scope="row" class="{header}-cell">
                   <a
                     href={`https://www.ratingscentral.com/Player.php?PlayerID=${player['playerID']}`}
                     target="_blank">{player[header]}</a>
                 </th>
               {:else}
-                <td>
+                <td class="{header}-cell">
                   {player[header]}
                   {#if header === 'Rating'}
-                    <div
+                    {#if player['stDev'] <= 50}<AccurateCircle />{:else if player['stDev'] > 50 && player['stDev'] <= 75}
+                      <FairlyAccurateCircle />
+                    {:else if player['stDev'] > 75 && player['stDev'] <= 100}<MediumAccuracyCircle />
+                    {:else if player['stDev'] > 100 && player['stDev'] <= 150}
+                      <LowAccuracyCircle />
+                    {:else}
+                      <NoAccuracyCircle />{/if}
+                    <!-- <div
                       class="colourRect"
                       class:accurateColour={player['stDev'] <= 50}
                       class:fairlyAccurateColour={player['stDev'] > 50 && player['stDev'] <= 75}
                       class:mediumAccuracyColour={player['stDev'] > 75 && player['stDev'] <= 100}
                       class:lowAccuracyColour={player['stDev'] > 100 && player['stDev'] <= 150}
                       class:noAccuracyColour={player['stDev'] > 150}>
-                    </div>
+                    </div> -->
                   {/if}
                 </td>
               {/if}
@@ -221,7 +241,7 @@
   .tableNav-container {
     display: grid;
     grid-template-columns: 33.333% 33.333% 33.333%;
-    padding: 1rem 0 4rem 0;
+    padding: 1rem 0 2rem 0;
     text-align: center;
   }
 
@@ -240,9 +260,9 @@
     border-radius: 50%;
     display: inline-block;
   }
-  .colourKey-container span {
+  /* .colourKey-container span {
     padding: 0 1rem;
-  }
+  } */
 
   .accurateColour {
     background-color: var(--TTS-accurate-rating);
@@ -264,6 +284,23 @@
     background-color: var(--TTS-no-accuracy-rating);
   }
 
+  .legend-container {
+    padding-bottom: 4rem;
+  }
+  .pattern-container {
+    display: grid;
+    padding: 0 1rem;
+    grid-template-columns: 1fr 2rem 2rem 2rem 2rem 2rem 1fr;
+    margin: 0 auto;
+    justify-items: center;
+  }
+  .pattern-container span:first-child {
+    justify-self: end;
+  }
+  .pattern-container span:last-child {
+    justify-self: start;
+  }
+
   /* Table CSS */
   .table-container {
     overflow: auto;
@@ -279,8 +316,7 @@
 
   table col.col-rank,
   table col.col-rating,
-  table col.col-gender,
-  table col.col-age {
+  table col.col-gender {
     width: 5rem;
   }
 
@@ -335,4 +371,33 @@
   thead tr:nth-child(even) {
     background: var(--TTS-purple-light);
   } */
+
+  @media screen and (max-width: 600px) {
+    .pattern-container {
+      padding: 0;
+      grid-template-columns: 1fr 1.5rem 1.5rem 1.5rem 1.5rem 1.5rem 1fr;
+    }
+
+    .tableNav-container {
+      display: block;
+    }
+
+    table col.col-rank {
+      width: 2.5rem;
+    }
+
+    table col.col-rating {
+      width: 4rem;
+    }
+
+    table .Gender-cell,
+    table .Club-cell {
+      display: none;
+    }
+
+    th,
+    td {
+      padding: 0.5rem 0.1rem;
+    }
+  }
 </style>

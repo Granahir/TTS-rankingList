@@ -1,4 +1,4 @@
-.cssReset h1{
+.cssReset h1 {
     font-family: var(--TTS-font-family-header);
     font-size: calc(var(--TTS-font-size) * 1.75);
     font-weight: bold;
@@ -70,4 +70,7 @@
     cursor: not-allowed;
 }
 
-
+@media screen and (max-width: 600px) {
+.cssReset h1 {
+        font-size: calc(var(--TTS-font-size) * 1.5);}
+}
