@@ -1,17 +1,21 @@
 <script>
-  const spreadsheetId = '1s-f2RdWFbBhl7T3Hrxpsc845gY6zTPVPb9kGDtvjdGc'
-  const sheetName = 'Rating List'
+  import { SvelteMap } from 'svelte/reactivity'
 
-  let tableHeaders = ['Rank', 'Name', 'Rating', 'Age', 'Gender', 'Club']
+  const spreadsheetId = '1s-f2RdWFbBhl7T3Hrxpsc845gY6zTPVPb9kGDtvjdGc'
+  const sheetName = 'Full List'
+
+  let tableHeaders = ['Rank', 'Name', 'Rating', 'Gender', 'Club']
 
   let fetchedData = $state([])
   let playerData = $state([])
 
   let genderGroups = ['Female', 'Male', 'Mixed']
   let ageGroups = ['Juniors', 'Seniors', 'Open']
+  let lists = ['Full', 'Rating', 'Ranking']
 
   let selectedGenderGroup = $state('Mixed')
   let selectedAgeGroup = $state('Open')
+  let selectedList = $state('Full')
 
   fetch(
     `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`
@@ -40,31 +44,46 @@
     .catch(error => console.error('Error:', error))
 
   const processRankingList = () => {
+    let counter = 0
     playerData = fetchedData
       .filter(player => {
         if (selectedGenderGroup === 'Mixed') {
           return true
         } else if (selectedGenderGroup === 'Female') {
-          return player['Gender'] === 'F'
+          return player['Gender'] === 'Female'
         } else if (selectedGenderGroup === 'Male') {
-          return player['Gender'] === 'M'
+          return player['Gender'] === 'Male'
         }
       })
       .filter(player => {
-        // Data unavailable for now
+        // Age category data unavailable for now
         return true
       })
+      .filter(player => {
+        if (selectedList === 'Full') {
+          return true
+        } else if (selectedList === 'Rating') {
+          console.log(player)
+          return player['Has played in Last 12 months']
+        } else if (selectedList === 'Ranking') {
+          return player['Has played in Last 12 months'] && player['Scottish eligibility'] === 'Yes'
+        }
+      })
       .toSorted((a, b) => b.Rating - a.Rating)
-      .map((player, i) => ({
-        Rank: i + 1,
-        Name: player['Name'],
-        Rating: player['Rating'],
-        Age: undefined,
-        Gender: player['Gender'],
-        Club: player['PrimaryClub'],
-        stDev: +player['StDev'],
-        playerID: player['ID']
-      }))
+      .map((player, i) => {
+        counter += +player['StDev'] > 150 ? 0 : 1
+
+        return {
+          Rank: +player['StDev'] > 150 ? '' : counter,
+          Name: player['Name'],
+          Rating: player['Rating'],
+          Age: undefined,
+          Gender: player['Gender'],
+          Club: player['PrimaryClub'],
+          stDev: +player['StDev'],
+          playerID: player['ID']
+        }
+      })
   }
 
   $effect(() => {
@@ -107,6 +126,18 @@
   </div>
 
   <div class="nav-container">
+    <h3>List</h3>
+    <div class="button-container">
+      <button class:selected={selectedList === 'Full'} onclick={() => (selectedList = 'Full')}
+        >Full</button>
+      <button class:selected={selectedList === 'Rating'} onclick={() => (selectedList = 'Rating')}
+        >Rating</button>
+      <button class:selected={selectedList === 'Ranking'} onclick={() => (selectedList = 'Ranking')}
+        >Ranking</button>
+    </div>
+  </div>
+
+  <div class="nav-container">
     <h3>Accuracy</h3>
     <div class="colourKey">
       <div class="colourKey-container">
@@ -137,12 +168,12 @@
 <div class="table-container" tabindex="0" role="region" aria-labelledby="tableCaption_01">
   {#if playerData.length > 0}
     <table>
-      <caption id="tableCaption_01">Player ranking list of Table-Tennis Scotland</caption>
+      <caption id="tableCaption_01">Player ranking of Table-Tennis Scotland</caption>
       <colgroup>
         <col class="col-rank" />
         <col class="col-name" />
         <col class="col-rating" />
-        <col class="col-age" />
+        <!-- <col class="col-age" /> -->
         <col class="col-gender" />
         <col class="col-club" />
       </colgroup>
@@ -253,8 +284,7 @@
   table col.col-rank,
   table col.col-rating,
   table col.col-gender,
-  table col.col-age,
-  table col.col-club {
+  table col.col-age {
     width: 5rem;
   }
 
@@ -300,6 +330,9 @@
   }
   th:first-of-type {
     width: 10rem;
+  }
+  tbody td:last-child {
+    font-size: calc(var(--TTS-font-size) * 0.85);
   }
 
   /* tbody tr:nth-child(even),
