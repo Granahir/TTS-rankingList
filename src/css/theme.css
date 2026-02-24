@@ -48,6 +48,14 @@
     color: grey;
 }
 
+.cssReset select {
+    font-size: calc(var(--TTS-font-size) * 0.85);
+    border: 2px solid var(--TTS-purple);
+    border-radius: 1.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+}
+
 .cssReset button:hover:not(:disabled) {
     color: black;
 }

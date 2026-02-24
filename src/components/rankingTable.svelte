@@ -10,7 +10,7 @@
   let playerData = $state([])
 
   let genderGroups = ['Female', 'Male', 'Mixed']
-  let ageGroups = ['Juniors', 'Seniors', 'Open']
+  let ageGroups = ['Open', 'U13', 'U15', 'U17', 'U19', 'U21', 'O40', 'O50', 'O60', 'O70', 'O75']
   let lists = ['Full', 'Rating', 'Ranking']
 
   let selectedGenderGroup = $state('Mixed')
@@ -45,6 +45,7 @@
 
   const processRankingList = () => {
     let counter = 0
+
     playerData = fetchedData
       .filter(player => {
         if (selectedGenderGroup === 'Mixed') {
@@ -56,17 +57,19 @@
         }
       })
       .filter(player => {
-        // Age category data unavailable for now
-        return true
+        if (selectedAgeGroup === 'Open') {
+          return true
+        } else {
+          return player[selectedAgeGroup]
+        }
       })
       .filter(player => {
         if (selectedList === 'Full') {
           return true
         } else if (selectedList === 'Rating') {
-          console.log(player)
-          return player['Has played in Last 12 months']
+          return player['played in 12 months']
         } else if (selectedList === 'Ranking') {
-          return player['Has played in Last 12 months'] && player['Scottish eligibility'] === 'Yes'
+          return player['played in 12 months'] && player['Scottish eligibility']
         }
       })
       .toSorted((a, b) => b.Rating - a.Rating)
@@ -87,7 +90,7 @@
   }
 
   $effect(() => {
-    ;(selectedGenderGroup, selectedAgeGroup, processRankingList())
+    ;(selectedGenderGroup, selectedAgeGroup, selectedList, processRankingList())
   })
 </script>
 
@@ -108,24 +111,6 @@
   </div>
 
   <div class="nav-container">
-    <h3>Age Divisions</h3>
-    <div class="button-container">
-      <button
-        class:selected={selectedAgeGroup === 'Juniors'}
-        onclick={() => (selectedAgeGroup = 'Juniors')}
-        disabled>Juniors</button>
-      <button
-        class:selected={selectedAgeGroup === 'Seniors'}
-        onclick={() => (selectedAgeGroup = 'Seniors')}
-        disabled>Seniors</button>
-      <button
-        class:selected={selectedAgeGroup === 'Open'}
-        onclick={() => (selectedAgeGroup = 'Open')}
-        disabled>Open</button>
-    </div>
-  </div>
-
-  <div class="nav-container">
     <h3>List</h3>
     <div class="button-container">
       <button class:selected={selectedList === 'Full'} onclick={() => (selectedList = 'Full')}
@@ -134,6 +119,17 @@
         >Rating</button>
       <button class:selected={selectedList === 'Ranking'} onclick={() => (selectedList = 'Ranking')}
         >Ranking</button>
+    </div>
+  </div>
+
+  <div class="nav-container">
+    <h3>Age Divisions</h3>
+    <div class="dropdown-container">
+      <select bind:value={selectedAgeGroup}>
+        {#each ageGroups as ageGroup}
+          <option value={ageGroup}>{ageGroup}</option>
+        {/each}
+      </select>
     </div>
   </div>
 
