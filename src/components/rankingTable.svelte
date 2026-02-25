@@ -80,13 +80,6 @@
           return player['played in 12 months'] && player['Scottish eligibility']
         }
       })
-      .filter(player => {
-        if (searchInput === '') {
-          return true
-        } else {
-          return player['Name'].toLowerCase().includes(searchInput.toLowerCase())
-        }
-      })
       .toSorted((a, b) => b.Rating - a.Rating)
       .map((player, i) => {
         counter += +player['StDev'] > 150 ? 0 : 1
@@ -100,6 +93,13 @@
           Club: player['PrimaryClub'],
           stDev: +player['StDev'],
           playerID: player['ID']
+        }
+      })
+      .filter(player => {
+        if (searchInput === '') {
+          return true
+        } else {
+          return player['Name'].toLowerCase().includes(searchInput.toLowerCase())
         }
       })
   }
