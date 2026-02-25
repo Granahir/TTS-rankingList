@@ -15,7 +15,7 @@
   let fetchedData = $state([])
   let playerData = $state([])
 
-  let genderGroups = ['Female', 'Male', 'Mixed']
+  let genderGroups = ['Mixed', 'Female', 'Male']
   let ageGroups = ['Open', 'U13', 'U15', 'U17', 'U19', 'U21', 'O40', 'O50', 'O60', 'O70', 'O75']
   let lists = ['Full', 'Rating', 'Ranking']
 
@@ -121,14 +121,15 @@
     <h3>Gender Groups</h3>
     <div class="button-container">
       <button
+        class:selected={selectedGenderGroup === 'Mixed'}
+        onclick={() => (selectedGenderGroup = 'Mixed')}>Mixed</button>
+
+      <button
         class:selected={selectedGenderGroup === 'Female'}
         onclick={() => (selectedGenderGroup = 'Female')}>Female</button>
       <button
         class:selected={selectedGenderGroup === 'Male'}
         onclick={() => (selectedGenderGroup = 'Male')}>Male</button>
-      <button
-        class:selected={selectedGenderGroup === 'Mixed'}
-        onclick={() => (selectedGenderGroup = 'Mixed')}>Mixed</button>
     </div>
   </div>
 
