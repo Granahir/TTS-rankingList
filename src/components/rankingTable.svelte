@@ -83,7 +83,7 @@
         if (searchInput === '') {
           return true
         } else {
-          return player['Name'].includes(searchInput)
+          return player['Name'].toLowerCase().includes(searchInput.toLowerCase())
         }
       })
       .toSorted((a, b) => b.Rating - a.Rating)
