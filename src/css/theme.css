@@ -84,15 +84,15 @@
     visibility: hidden;
     width: 130px;
     background-color: var(--TTS-text);
-    color: #ffffff;
+    color: white;
     text-align: center;
     border-radius: 6px;
-    padding: 5px 0;
     position: absolute;
     z-index: 3;
     bottom: 150%;
     left: 65%;
     margin-left: -65px;
+    padding: 0.5rem;
 }
 
 .cssReset .tooltip:hover .tooltiptext {
