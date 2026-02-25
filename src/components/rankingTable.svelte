@@ -4,6 +4,7 @@
   import MediumAccuracyCircle from '$components/MediumAccuracyCircle.svelte'
   import LowAccuracyCircle from '$components/LowAccuracyCircle.svelte'
   import NoAccuracyCircle from '$components/NoAccuracyCircle.svelte'
+  import { match } from '$app/paths'
 
   const spreadsheetId = '1s-f2RdWFbBhl7T3Hrxpsc845gY6zTPVPb9kGDtvjdGc'
   const sheetName = 'Full List'
@@ -261,7 +262,13 @@
       </tbody>
     </table>
   {:else}
-    <p>No results...</p>
+    <p>
+      {#if fetchedData.length === 0}
+        Loading...
+      {:else}
+        No match
+      {/if}
+    </p>
   {/if}
 </div>
 
