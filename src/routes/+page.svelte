@@ -6,17 +6,31 @@
   <div class="embed-container">
     <h1 class="center">TTS Ranking list</h1>
     <p>
-      This section is introducing the ranking list. Lorem ipsum dolor sit amet consectetur
-      adipisicing elit. Aperiam asperiores numquam explicabo ex debitis, nulla laborum dicta eveniet
-      assumenda esse beatae? Delectus explicabo autem repudiandae quos debitis, vitae aspernatur
-      eveniet! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perspiciatis unde in autem
-      fuga nobis totam neque impedit? Neque a rerum reprehenderit laboriosam tempora animi libero
-      repellendus praesentium dicta. Assumenda, minus!
+      Table Tennis Scotland are launching a new player Ranking System, based on <a
+        href="https://www.ratingscentral.com/GeneralInfo.php"
+        target="_blank">Ratings Central</a> as the foundation for rating calculations. This ensures transparent,
+      data-driven performance evaluation.
     </p>
-    <p class="center">
-      Clicking on a player's name or club will allow you to see their match history or their club's
-      information (through RatingsCentral). Maybe we should "embed" our own match history without
-      redirecting to RatingsCentral? Use the filters below to check out the different categories:
+    <p>
+      Lists will be published after each national event. Although local results may be inputted in
+      between times, national tournaments will take ratings from the last national event allowing
+      national events to take priority.
+    </p>
+    <p>
+      Players that have a Ratings Accuracy over 150 will not get a ranking position, players can
+      play more frequently to keep their rating accurate
+    </p>
+    <p>
+      <b>Full list</b> has all affiliated players that have played a competitive match<br /><b
+        >Rating List</b>
+      is a subset of the full list in which a player has played one eligible national event in the past
+      12 months <br /><b>Ranking List</b> is a subset of the rating list of players that are eligible
+      to play for Scotland and play in the National Championships (Self Selected by players - this needs
+      to be checked)
+    </p>
+    <p>
+      <br />
+      Clicking on a player's name will allow you to see their match history (through RatingsCentral).
     </p>
 
     <hr />

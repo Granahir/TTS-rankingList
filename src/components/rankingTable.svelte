@@ -7,6 +7,7 @@
 
   const spreadsheetId = '1s-f2RdWFbBhl7T3Hrxpsc845gY6zTPVPb9kGDtvjdGc'
   const sheetName = 'Full List'
+  let width = $state()
 
   let tableHeaders = ['Rank', 'Name', 'Rating', 'Gender', 'Club']
 
@@ -20,6 +21,8 @@
   let selectedGenderGroup = $state('Mixed')
   let selectedAgeGroup = $state('Open')
   let selectedList = $state('Full')
+
+  let searchInput = $state('')
 
   fetch(
     `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`
@@ -76,6 +79,13 @@
           return player['played in 12 months'] && player['Scottish eligibility']
         }
       })
+      .filter(player => {
+        if (searchInput === '') {
+          return true
+        } else {
+          return player['Name'].includes(searchInput)
+        }
+      })
       .toSorted((a, b) => b.Rating - a.Rating)
       .map((player, i) => {
         counter += +player['StDev'] > 150 ? 0 : 1
@@ -93,12 +103,19 @@
       })
   }
 
+  const resetFilters = () => {
+    selectedGenderGroup = 'Mixed'
+    selectedAgeGroup = 'Open'
+    selectedList = 'Full'
+    searchInput = ''
+  }
+
   $effect(() => {
-    ;(selectedGenderGroup, selectedAgeGroup, selectedList, processRankingList())
+    ;(selectedGenderGroup, selectedAgeGroup, selectedList, searchInput, processRankingList())
   })
 </script>
 
-<div class="tableNav-container">
+<div class="tableNav-container" bind:clientWidth={width}>
   <div class="nav-container">
     <h3>Gender Groups</h3>
     <div class="button-container">
@@ -164,14 +181,26 @@
     </div> -->
 
   <div class="pattern-container">
-    <span>Inaccurate ◀</span>
+    <span>Less accurate</span>
+    <span>◀</span>
     <NoAccuracyCircle />
     <LowAccuracyCircle />
     <MediumAccuracyCircle />
     <FairlyAccurateCircle />
     <AccurateCircle />
-    <span> ▶ Accurate </span>
+    <span>▶</span>
+    <span>More accurate </span>
   </div>
+</div>
+
+<div class="table-nav">
+  <input
+    bind:value={searchInput}
+    type="text"
+    id="searchInput"
+    placeholder={width > 600 ? 'Search for players...' : 'Search...'} />
+  <div />
+  <button id="resetButton" onclick={resetFilters}>Reset filters</button>
 </div>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -262,8 +291,8 @@
   }
   /* .colourKey-container span {
     padding: 0 1rem;
-  } */
-
+  } 
+  
   .accurateColour {
     background-color: var(--TTS-accurate-rating);
   }
@@ -282,7 +311,7 @@
 
   .noAccuracyColour {
     background-color: var(--TTS-no-accuracy-rating);
-  }
+  } */
 
   .legend-container {
     padding-bottom: 4rem;
@@ -290,7 +319,7 @@
   .pattern-container {
     display: grid;
     padding: 0 1rem;
-    grid-template-columns: 1fr 2rem 2rem 2rem 2rem 2rem 1fr;
+    grid-template-columns: 1fr 2rem 2rem 2rem 2rem 2rem 2rem 2rem 1fr;
     margin: 0 auto;
     justify-items: center;
   }
@@ -301,11 +330,53 @@
     justify-self: start;
   }
 
+  .table-nav {
+    display: grid;
+    border-radius: 1rem 1rem 0 0;
+    grid-template-columns: 12rem auto 8rem;
+    background-color: var(--TTS-purple);
+    border: 2px solid var(--TTS-purple-light);
+    border-bottom-color: var(--TTS-purple);
+    padding: 0.5rem;
+  }
+  .table-nav input {
+    color: white;
+    border-radius: 1.5rem;
+    padding: 0.5rem;
+    background-color: var(--TTS-purple);
+    border-color: white;
+
+    padding-left: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 12px center;
+    background-size: 20px;
+  }
+  .table-nav input::placeholder {
+    color: white;
+  }
+  .table-nav input:focus {
+    outline: white;
+  }
+  #resetButton {
+    width: 5rem;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-color: white;
+    text-align: center;
+    justify-self: end;
+  }
+  #resetButton:hover {
+    color: white;
+    font-weight: bold;
+  }
+
   /* Table CSS */
   .table-container {
     overflow: auto;
     max-height: 80vh;
     border: 1px solid var(--TTS-purple-light);
+    border-radius: 0 0 1rem 1rem;
   }
 
   table {
@@ -343,9 +414,9 @@
     color: white;
     position: sticky;
     top: 0;
+    z-index: 2;
   }
   thead th {
-    vertical-align: bottom;
     text-align: center;
   }
 
@@ -358,7 +429,7 @@
   td {
     border: 1px solid lightgrey;
     padding: 0.25rem 0.75rem;
-    vertical-align: baseline;
+    vertical-align: middle;
   }
   th:first-of-type {
     width: 10rem;
@@ -367,19 +438,18 @@
     font-size: calc(var(--TTS-font-size) * 0.85);
   }
 
-  /* tbody tr:nth-child(even),
-  thead tr:nth-child(even) {
-    background: var(--TTS-purple-light);
-  } */
-
   @media screen and (max-width: 600px) {
     .pattern-container {
       padding: 0;
-      grid-template-columns: 1fr 1.5rem 1.5rem 1.5rem 1.5rem 1.5rem 1fr;
+      grid-template-columns: 1fr 1.5rem 1.5rem 1.5rem 1.5rem 1.5rem 1.5rem 1.5rem 1fr;
     }
 
     .tableNav-container {
       display: block;
+    }
+
+    .table-nav {
+      grid-template-columns: 7rem auto 6rem;
     }
 
     table col.col-rank {
@@ -390,8 +460,10 @@
       width: 4rem;
     }
 
-    table .Gender-cell,
-    table .Club-cell {
+    table .Name-cell {
+      padding: 0 0.5rem;
+    }
+    table .Gender-cell {
       display: none;
     }
 
