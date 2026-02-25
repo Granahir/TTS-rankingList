@@ -261,7 +261,7 @@
       </tbody>
     </table>
   {:else}
-    <p>Loading...</p>
+    <p>No results...</p>
   {/if}
 </div>
 
