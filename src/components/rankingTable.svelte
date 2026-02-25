@@ -325,9 +325,11 @@
   }
   .pattern-container span:first-child {
     justify-self: end;
+    text-align: end;
   }
   .pattern-container span:last-child {
     justify-self: start;
+    text-align: start;
   }
 
   .table-nav {
